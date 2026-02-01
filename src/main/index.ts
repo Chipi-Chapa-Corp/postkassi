@@ -1,7 +1,8 @@
-import { electronApp, is, optimizer } from "@electron-toolkit/utils";
-import { app, BrowserWindow, ipcMain, shell } from "electron";
 import { join } from "node:path";
+import { electronApp, is, optimizer } from "@electron-toolkit/utils";
+import { app, BrowserWindow, shell } from "electron";
 import icon from "../../resources/icon.png?asset";
+import { handleIpc } from "./utility/ipc";
 
 function createWindow(): void {
 	// Create the browser window.
@@ -50,7 +51,11 @@ app.whenReady().then(() => {
 	});
 
 	// IPC test
-	ipcMain.on("ping", () => console.log("pong"));
+	handleIpc(
+		"debug",
+		() =>
+			new Promise<string>((resolve) => setTimeout(() => resolve("pong"), 1000)),
+	);
 
 	createWindow();
 

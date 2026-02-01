@@ -1,8 +1,7 @@
-import "./assets/main.css";
-
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import { App } from "./components/App";
+import { QueryProvider } from "./utility/query";
 
 const root = document.getElementById("root");
 
@@ -12,6 +11,8 @@ if (!root) {
 
 createRoot(root).render(
 	<StrictMode>
-		<App />
+		<QueryProvider>
+			<App />
+		</QueryProvider>
 	</StrictMode>,
 );
