@@ -1,9 +1,13 @@
 import { join } from "node:path";
 import { is } from "@electron-toolkit/utils";
+import { buildArgument } from "@shared/arguments";
 import { BrowserWindow, shell } from "electron";
 import icon from "../../resources/icon.png?asset";
+import { getTitlebarLayout } from "./titlebar";
 
-export function createWindow() {
+export async function createWindow() {
+	const titlebarLayout = await getTitlebarLayout();
+
 	const mainWindow = new BrowserWindow({
 		width: 900,
 		height: 670,
@@ -12,8 +16,9 @@ export function createWindow() {
 		frame: false,
 		...(process.platform === "linux" ? { icon } : {}),
 		webPreferences: {
-			preload: join(__dirname, "../preload/index.js"),
+			preload: join(__dirname, "../preload/index.mjs"),
 			sandbox: false,
+			additionalArguments: [buildArgument("titlebarLayout", titlebarLayout)],
 		},
 	});
 
