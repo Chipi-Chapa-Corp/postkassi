@@ -1,5 +1,4 @@
 import type { IpcProtocol } from "@shared/ipc";
-import type { IpcRendererEvent } from "electron/renderer";
 
 export function invokeIpc<T extends keyof IpcProtocol>(
 	channel: T,
@@ -11,9 +10,10 @@ export function invokeIpc<T extends keyof IpcProtocol>(
 export function handleIpc<T extends keyof IpcProtocol>(
 	channel: T,
 	callback: (
-		event: IpcRendererEvent,
 		...args: Parameters<IpcProtocol[T]>
 	) => Awaited<ReturnType<IpcProtocol[T]>>,
-): void {
-	window.electron.ipcRenderer.on(channel, callback);
+) {
+	return window.electron.ipcRenderer.on(channel, (_event, ...args) =>
+		callback(...(args as Parameters<IpcProtocol[T]>)),
+	);
 }

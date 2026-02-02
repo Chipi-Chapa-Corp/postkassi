@@ -1,9 +1,9 @@
 import type { ElectronAPI } from "@electron-toolkit/preload";
-import type { TitlebarLayout } from "../main/titlebar";
+import type { AppAPI } from "./api";
 
 declare global {
 	interface Window {
 		electron: ElectronAPI;
-		titlebarLayout: TitlebarLayout;
+		app: AppAPI;
 	}
 }

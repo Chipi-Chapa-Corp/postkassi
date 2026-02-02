@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 export const Titlebar = () => {
 	const titlebarLayout = useMemo(() => {
-		return window.titlebarLayout;
+		return window.app.titlebarLayout;
 	}, []);
 
 	return (

@@ -1,17 +1,13 @@
 import { electronAPI } from "@electron-toolkit/preload";
-import { findArgument } from "@shared/arguments";
 import { contextBridge } from "electron";
-import type { TitlebarLayout } from "../main/titlebar";
+import { createAppApi } from "./api";
 
-const titlebarLayout = findArgument<TitlebarLayout>(
-	"titlebarLayout",
-	process.argv,
-);
+const appAPI = await createAppApi();
 
 if (process.contextIsolated) {
 	try {
 		contextBridge.exposeInMainWorld("electron", electronAPI);
-		contextBridge.exposeInMainWorld("titlebarLayout", titlebarLayout);
+		contextBridge.exposeInMainWorld("app", appAPI);
 	} catch (error) {
 		console.error(error);
 	}
@@ -19,5 +15,5 @@ if (process.contextIsolated) {
 	// @ts-expect-error (define in dts)
 	window.electron = electronAPI;
 	// @ts-expect-error (define in dts)
-	window.titlebarLayout = titlebarLayout;
+	window.app = appAPI;
 }

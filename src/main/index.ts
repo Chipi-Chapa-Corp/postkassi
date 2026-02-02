@@ -4,6 +4,14 @@ import { handleIpcs } from "./ipc";
 import { handleDebug } from "./ipc/debug";
 import { createWindow } from "./window";
 
+function setupMessaging(_mainWindow: BrowserWindow) {
+	// const _sendIpc = makeIpcSender(mainWindow);
+
+	handleIpcs({
+		debug: handleDebug,
+	});
+}
+
 app.whenReady().then(async () => {
 	electronApp.setAppUserModelId("org.chipichapa.postkassi");
 
@@ -11,11 +19,9 @@ app.whenReady().then(async () => {
 		optimizer.watchWindowShortcuts(window);
 	});
 
-	handleIpcs({
-		debug: handleDebug,
-	});
+	const { mainWindow, loadWindow } = await createWindow();
 
-	const loadWindow = await createWindow();
+	setupMessaging(mainWindow);
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) loadWindow();
