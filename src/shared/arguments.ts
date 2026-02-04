@@ -15,7 +15,7 @@ export function findArgument<
 	{ json = true as _Json }: { json?: _Json } = {},
 ): _Json extends true ? T | null : string | null {
 	const prefix = `--${key}=`;
-	const argument = argv.find((argument) => argument.startsWith(prefix));
+	const argument = argv.find((arg) => arg.startsWith(prefix));
 	try {
 		return argument
 			? json

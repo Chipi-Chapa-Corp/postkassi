@@ -8,6 +8,7 @@
 	"scripts": {
 		"format": "npx @biomejs/biome format --write; npx @biomejs/biome lint --write",
 		"format:unsafe": "npx @biomejs/biome format --write --unsafe; npx @biomejs/biome lint --write",
+		"prepare": "panda codegen",
 		"typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
 		"typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
 		"typecheck": "npm run typecheck:node && npm run typecheck:web",
@@ -23,19 +24,23 @@
 	"dependencies": {
 		"@electron-toolkit/preload": "^3.0.2",
 		"@electron-toolkit/utils": "^4.0.0",
-		"@stitches/react": "^1.2.8",
 		"@tanstack/react-query": "^5.90.20"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.13",
 		"@electron-toolkit/tsconfig": "^2.0.0",
+		"@pandacss/dev": "^1.8.1",
+		"@pandacss/preset-base": "^1.8.1",
+		"@pandacss/preset-panda": "^1.8.1",
 		"@types/node": "^22.19.1",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.1",
+		"concurrently": "^9.2.1",
 		"electron": "^38.8.0",
 		"electron-builder": "^26.0.12",
 		"electron-vite": "^5.0.0",
+		"postcss": "^8.5.6",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
 		"typescript": "^5.9.3",

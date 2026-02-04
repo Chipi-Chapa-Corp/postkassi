@@ -1,6 +1,6 @@
 import { getGsetting } from "./gsettings";
 
-type TitlebarItem = "minimize" | "maximize" | "close" | "menu";
+export type TitlebarItem = "minimize" | "maximize" | "close" | "appmenu";
 
 export type TitlebarLayout = {
 	left: TitlebarItem[];

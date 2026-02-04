@@ -1,5 +1,3 @@
-import { lightTheme } from "@renderer/styles/light";
-import { darkTheme } from "@renderer/utility/styled";
 import {
 	createContext,
 	type FC,
@@ -10,22 +8,28 @@ import {
 	useState,
 } from "react";
 
-export const ThemeContext = createContext<typeof darkTheme | typeof lightTheme>(
-	darkTheme,
-);
+type ThemeName = "dark" | "light";
+
+export const ThemeContext = createContext<ThemeName>("dark");
 
 export const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
 	const mediaQuery = useMemo(
 		() => window.matchMedia("(prefers-color-scheme: dark)"),
 		[],
 	);
-	const [theme, setTheme] = useState<typeof darkTheme | typeof lightTheme>(
-		mediaQuery.matches ? darkTheme : lightTheme,
-	);
+	const [theme, setTheme] = useState<ThemeName>(() => {
+		const preferred = mediaQuery.matches ? "dark" : "light";
+		document.documentElement.dataset.theme = preferred;
+		return preferred;
+	});
+
+	useEffect(() => {
+		document.documentElement.dataset.theme = theme;
+	}, [theme]);
 
 	useEffect(() => {
 		const onChange = (event: MediaQueryListEvent) =>
-			setTheme(event.matches ? darkTheme : lightTheme);
+			setTheme(event.matches ? "dark" : "light");
 
 		mediaQuery.addEventListener("change", onChange);
 		return () => mediaQuery.removeEventListener("change", onChange);

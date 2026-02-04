@@ -1,12 +1,14 @@
-import { styled } from "@renderer/utility/styled";
+import { styled } from "@renderer/styled-system/jsx";
 
 export const Button = styled("button", {
-	padding: "$sm",
-	color: "$text",
-	border: "none",
-	borderRadius: "$sm",
-	backgroundColor: "$itemBackground",
-	"&:hover": {
-		backgroundColor: "$itemHoverBackground",
+	base: {
+		padding: "sm",
+		color: "text",
+		border: "none",
+		borderRadius: "sm",
+		backgroundColor: "itemBackground",
+		_hover: {
+			backgroundColor: "itemHoverBackground",
+		},
 	},
 });

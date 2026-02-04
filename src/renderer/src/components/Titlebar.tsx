@@ -1,23 +1,19 @@
+import { Flex } from "@renderer/styled-system/jsx";
 import { useMemo } from "react";
+import { Button } from "./Button";
 
 export const Titlebar = () => {
-	const titlebarLayout = useMemo(() => {
-		return window.app.titlebarLayout;
-	}, []);
+	const titlebarLayout = useMemo(() => window.app.titlebarLayout, []);
 
 	return (
-		<div style={{ display: "flex", justifyContent: "space-between" }}>
+		<Flex width="100%" justify="space-between">
 			{titlebarLayout.left.map((item) => (
-				<button type="button" key={`left-${item}`}>
-					{item}
-				</button>
+				<Button key={`left-${item}`}>{item}</Button>
 			))}
-			<div style={{ flex: 1 }} />
+			<div />
 			{titlebarLayout.right.map((item) => (
-				<button type="button" key={`right-${item}`}>
-					{item}
-				</button>
+				<Button key={`right-${item}`}>{item}</Button>
 			))}
-		</div>
+		</Flex>
 	);
 };
