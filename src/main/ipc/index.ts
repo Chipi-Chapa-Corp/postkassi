@@ -1,5 +1,4 @@
 import type { IpcProtocol } from "@shared/ipc";
-import type { MaybePromise } from "@shared/types";
 import { type BrowserWindow, type IpcMainInvokeEvent, ipcMain } from "electron";
 
 export type SendIpcFn = ReturnType<typeof makeIpcSender>;
@@ -21,19 +20,11 @@ export function handleIpc<T extends keyof IpcProtocol>(
 	ipcMain.handle(channel, callback);
 }
 
-export function handleIpcs(
-	map: Partial<
-		Record<
-			keyof IpcProtocol,
-			(
-				...args: Parameters<IpcProtocol[keyof IpcProtocol]>
-			) => MaybePromise<Awaited<ReturnType<IpcProtocol[keyof IpcProtocol]>>>
-		>
-	>,
-) {
+export function handleIpcs(map: Partial<IpcProtocol>) {
 	for (const [channel, callback] of Object.entries(map)) {
 		handleIpc(channel as keyof IpcProtocol, (_event, ...args) =>
-			Promise.resolve(callback(...args)),
+			// biome-ignore lint/suspicious/noExplicitAny: exact mapping
+			Promise.resolve((callback as any)(...args)),
 		);
 	}
 }

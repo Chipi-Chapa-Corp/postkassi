@@ -1,8 +1,8 @@
-import { makeTitlebarLayoutApi } from "./titlebar";
+import { createControlsApi } from "./controls";
 
 export async function createAppApi() {
 	return {
-		titlebarLayout: makeTitlebarLayoutApi(),
+		controls: await createControlsApi(),
 	};
 }
 

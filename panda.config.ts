@@ -39,6 +39,7 @@ export default defineConfig({
 				md: { value: "16px" },
 				lg: { value: "32px" },
 				xl: { value: "64px" },
+				full: { value: "100%" },
 			},
 			colors: {
 				white: { value: "#ffffff" },

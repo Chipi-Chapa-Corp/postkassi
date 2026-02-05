@@ -1,15 +1,31 @@
 import { electronApp, optimizer } from "@electron-toolkit/utils";
 import { app, BrowserWindow } from "electron";
-import { handleIpcs } from "./ipc";
+import { handleIpc, handleIpcs, makeIpcSender } from "./ipc";
 import { handleDebug } from "./ipc/debug";
+import {
+	handleWindowClose,
+	handleWindowIsMaximized,
+	handleWindowMaximize,
+	handleWindowMinimize,
+	handleWindowUnmaximize,
+} from "./ipc/window";
 import { createWindow } from "./window";
 
-function setupMessaging(_mainWindow: BrowserWindow) {
-	// const _sendIpc = makeIpcSender(mainWindow);
+function setupMessaging(mainWindow: BrowserWindow) {
+	const sendIpc = makeIpcSender(mainWindow);
+
+	mainWindow.on("maximize", () => sendIpc("windowMaximizedChanged", true));
+	mainWindow.on("unmaximize", () => sendIpc("windowMaximizedChanged", false));
 
 	handleIpcs({
 		debug: handleDebug,
 	});
+
+	handleIpc("windowMinimize", handleWindowMinimize);
+	handleIpc("windowMaximize", handleWindowMaximize);
+	handleIpc("windowUnmaximize", handleWindowUnmaximize);
+	handleIpc("windowClose", handleWindowClose);
+	handleIpc("windowIsMaximized", handleWindowIsMaximized);
 }
 
 app.whenReady().then(async () => {
