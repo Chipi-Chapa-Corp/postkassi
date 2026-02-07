@@ -48,7 +48,8 @@ export default defineConfig({
 		},
 		semanticTokens: 	{
 			colors: {
-				background: { value: { base: "#181818", _light: "#ffffff" } },
+				background: { value: { base: "#212121", _light: "#ffffff" } },
+				panelBackground: { value: { base: "#181818", _light: "#f9f9f9" } },
 				itemBackground: { value: { base: "#242424", _light: "#eaeaea" } },
 				itemHoverBackground: { value: { base: "#303030", _light: "#efefef" } },
 				text: { value: { base: "white", _light: "black" } },

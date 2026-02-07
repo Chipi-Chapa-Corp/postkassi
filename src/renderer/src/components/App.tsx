@@ -1,3 +1,4 @@
+import { useIsMaximized } from "@renderer/hooks/window";
 import { Flex } from "@renderer/styled-system/jsx";
 import { useIpcMutation } from "@renderer/utility/query";
 import type { FC } from "react";
@@ -7,6 +8,8 @@ import { Titlebar } from "./Titlebar";
 export const App: FC = () => {
 	const { execute, data, isPending } = useIpcMutation("debug");
 
+	const isMaximized = useIsMaximized();
+
 	return (
 		<Flex
 			direction="column"
@@ -14,6 +17,9 @@ export const App: FC = () => {
 			height="100%"
 			justify="space-between"
 			align="center"
+			borderWidth={isMaximized ? "0" : "thin"}
+			borderColor="panelBackground"
+			borderStyle="solid"
 		>
 			<Titlebar />
 			<p>{isPending ? "Loading..." : data}</p>

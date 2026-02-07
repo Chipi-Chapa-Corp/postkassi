@@ -19,6 +19,9 @@
 			"nursery": {
 				"noFloatingPromises": "error",
 				"noShadow": "error"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
 			}
 		}
 	},

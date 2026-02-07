@@ -5,23 +5,23 @@ import {
 	useMutation,
 	useQuery,
 } from "@tanstack/react-query";
-import { type FC, type PropsWithChildren, useMemo } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { invokeIpc } from "./ipc";
 
-export const QueryProvider: FC<PropsWithChildren> = ({ children }) => {
-	const client = useMemo(() => new QueryClient(), []);
-	return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
-};
+const client = new QueryClient();
 
-export function useIpcQuery<T extends keyof IpcProtocol>(
+export const QueryProvider: FC<PropsWithChildren> = ({ children }) => (
+	<QueryClientProvider client={client}>{children}</QueryClientProvider>
+);
+
+export const useIpcQuery = <T extends keyof IpcProtocol>(
 	channel: T,
 	...args: Parameters<IpcProtocol[T]>
-) {
-	return useQuery({
+) =>
+	useQuery({
 		queryKey: [channel, ...args],
 		queryFn: () => invokeIpc(channel, ...args),
 	});
-}
 
 export function useIpcMutation<T extends keyof IpcProtocol>(channel: T) {
 	const mutation = useMutation({
