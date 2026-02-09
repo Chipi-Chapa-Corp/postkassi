@@ -4,6 +4,11 @@ import { defineConfig } from "electron-vite";
 
 export default defineConfig({
 	main: {
+		build: {
+			rollupOptions: {
+				external: ["dbus-next", "imapflow", "mailparser"],
+			},
+		},
 		resolve: {
 			alias: {
 				"@shared": resolve("src/shared"),

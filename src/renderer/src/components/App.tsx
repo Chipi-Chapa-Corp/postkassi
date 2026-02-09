@@ -6,7 +6,26 @@ import { Button } from "./Button";
 import { Titlebar } from "./Titlebar";
 
 export const App: FC = () => {
-	const { execute, data, isPending } = useIpcMutation("debug");
+	const {
+		execute: fetchAccounts,
+		data: accounts,
+		isPending: isFetchingAccounts,
+	} = useIpcMutation("mailGetAccounts");
+	const {
+		execute: fetchFolders,
+		data: folders,
+		isPending: isFetchingFolders,
+	} = useIpcMutation("mailGetFolders");
+	const {
+		execute: fetchMessages,
+		data: messages,
+		isPending: isFetchingMessages,
+	} = useIpcMutation("mailGetMessages");
+	const {
+		execute: fetchMessageBody,
+		data: messageBody,
+		isPending: isFetchingMessageBody,
+	} = useIpcMutation("mailGetMessageBody");
 
 	const isMaximized = useIsMaximized();
 
@@ -22,10 +41,40 @@ export const App: FC = () => {
 			borderStyle="solid"
 		>
 			<Titlebar />
-			<p>{isPending ? "Loading..." : data}</p>
-			<Button type="button" onClick={() => execute("ping")}>
-				Debug
+			<p>
+				{isFetchingAccounts ? "Loading..." : JSON.stringify(accounts, null, 2)}
+				{isFetchingFolders ? "Loading..." : JSON.stringify(folders, null, 2)}
+				{isFetchingMessages ? "Loading..." : JSON.stringify(messages, null, 2)}
+				{isFetchingMessageBody
+					? "Loading..."
+					: JSON.stringify(messageBody, null, 2)}
+			</p>
+			<Button type="button" onClick={() => fetchAccounts()}>
+				Load Accounts
 			</Button>
+			{!!accounts && (
+				<Button type="button" onClick={() => fetchFolders(accounts[0].path)}>
+					Load Folders
+				</Button>
+			)}
+			{!!folders && !!accounts && (
+				<Button
+					type="button"
+					onClick={() => fetchMessages(accounts[0].path, folders[0].path)}
+				>
+					Load Messages
+				</Button>
+			)}
+			{!!messages && !!folders && !!accounts && (
+				<Button
+					type="button"
+					onClick={() =>
+						fetchMessageBody(accounts[0].path, folders[0].path, messages[0].uid)
+					}
+				>
+					Load Message Body
+				</Button>
+			)}
 		</Flex>
 	);
 };

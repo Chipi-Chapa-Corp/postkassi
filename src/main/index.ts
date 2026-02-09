@@ -1,17 +1,23 @@
 import { electronApp, optimizer } from "@electron-toolkit/utils";
+import type dbus from "dbus-next";
 import { app, BrowserWindow } from "electron";
-import { handleIpc, handleIpcs, makeIpcSender } from "./ipc";
-import { handleDebug } from "./ipc/debug";
+import { createSessionBus } from "./goa/bus";
 import {
-	handleWindowClose,
-	handleWindowIsMaximized,
-	handleWindowMaximize,
-	handleWindowMinimize,
-	handleWindowUnmaximize,
-} from "./ipc/window";
+	closeMailContext,
+	createMailContext,
+	type MailContext,
+} from "./imap/context";
+import { handleIpcs, makeIpcSender } from "./ipc";
+import { handleDebug } from "./ipc/debug";
+import { handleMailIpcs } from "./ipc/mail";
+import { handleWindowIpcs } from "./ipc/window";
 import { createWindow } from "./window";
 
-function setupMessaging(mainWindow: BrowserWindow) {
+function setupMessaging(
+	mainWindow: BrowserWindow,
+	sessionBus: dbus.MessageBus,
+	mailContext: MailContext,
+) {
 	const sendIpc = makeIpcSender(mainWindow);
 
 	mainWindow.on("maximize", () => sendIpc("windowMaximizedChanged", true));
@@ -20,12 +26,8 @@ function setupMessaging(mainWindow: BrowserWindow) {
 	handleIpcs({
 		debug: handleDebug,
 	});
-
-	handleIpc("windowMinimize", handleWindowMinimize);
-	handleIpc("windowMaximize", handleWindowMaximize);
-	handleIpc("windowUnmaximize", handleWindowUnmaximize);
-	handleIpc("windowClose", handleWindowClose);
-	handleIpc("windowIsMaximized", handleWindowIsMaximized);
+	handleWindowIpcs();
+	handleMailIpcs(sessionBus, mailContext);
 }
 
 app.whenReady().then(async () => {
@@ -35,12 +37,20 @@ app.whenReady().then(async () => {
 		optimizer.watchWindowShortcuts(window);
 	});
 
+	const sessionBus = createSessionBus();
+	const mailContext = createMailContext(sessionBus);
+
 	const { mainWindow, loadWindow } = await createWindow();
 
-	setupMessaging(mainWindow);
+	setupMessaging(mainWindow, sessionBus, mailContext);
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) loadWindow();
+	});
+
+	app.on("will-quit", () => {
+		closeMailContext(mailContext);
+		sessionBus.disconnect();
 	});
 
 	loadWindow();

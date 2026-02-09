@@ -25,7 +25,10 @@
 		"@electron-toolkit/preload": "^3.0.2",
 		"@electron-toolkit/utils": "^4.0.0",
 		"@tanstack/react-query": "^5.90.20",
+		"dbus-next": "^0.10.2",
+		"imapflow": "^1.2.9",
 		"lucide-react": "^0.563.0",
+		"mailparser": "^3.9.3",
 		"react-compiler-runtime": "^1.0.0"
 	},
 	"devDependencies": {
@@ -34,6 +37,7 @@
 		"@pandacss/dev": "^1.8.1",
 		"@pandacss/preset-base": "^1.8.1",
 		"@pandacss/preset-panda": "^1.8.1",
+		"@types/mailparser": "^3.4.6",
 		"@types/node": "^22.19.1",
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
