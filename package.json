@@ -29,7 +29,8 @@
 		"imapflow": "^1.2.9",
 		"lucide-react": "^0.563.0",
 		"mailparser": "^3.9.3",
-		"react-compiler-runtime": "^1.0.0"
+		"react-compiler-runtime": "^1.0.0",
+		"react-resizable-panels": "^4.6.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.13",
