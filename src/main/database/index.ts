@@ -1,8 +1,11 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
 import SQLite from "better-sqlite3";
-import { FileMigrationProvider, Kysely, Migrator, SqliteDialect } from "kysely";
+import {
+	Kysely,
+	type Migration,
+	type MigrationProvider,
+	Migrator,
+	SqliteDialect,
+} from "kysely";
 import type { FolderTable } from "../folder";
 import type {
 	MessageBodyTable,
@@ -22,6 +25,34 @@ export type Database = {
 	messageFlags: MessageFlagsTable;
 };
 
+const migrationModules = import.meta.glob<{
+	up: Migration["up"];
+	down: Migration["down"];
+}>("./migrations/*.ts", { eager: true });
+
+const migrationProvider: MigrationProvider = {
+	getMigrations: async () =>
+		Object.fromEntries(
+			Object.entries(migrationModules).map(([modulePath, migrationModule]) => {
+				const migrationFileName = modulePath.split("/").at(-1);
+				if (!migrationFileName) {
+					throw new Error(`Invalid migration module path: ${modulePath}`);
+				}
+				const migrationName = migrationFileName.slice(
+					0,
+					migrationFileName.length - ".ts".length,
+				);
+				return [
+					migrationName,
+					{
+						up: migrationModule.up,
+						down: migrationModule.down,
+					},
+				] as const;
+			}),
+		),
+};
+
 export async function connectToDatabase() {
 	const dialect = new SqliteDialect({
 		database: new SQLite("postkassi.db"),
@@ -36,20 +67,9 @@ export async function connectToDatabase() {
 }
 
 async function migrateDatabase(database: Kysely<Database>): Promise<void> {
-	const migrationFolder = path.join(
-		path.dirname(fileURLToPath(import.meta.url)),
-		"migrations",
-	);
-
-	const provider = new FileMigrationProvider({
-		fs,
-		path,
-		migrationFolder,
-	});
-
 	const migrator = new Migrator({
 		db: database,
-		provider,
+		provider: migrationProvider,
 	});
 
 	const migrationResult = await migrator.migrateToLatest();

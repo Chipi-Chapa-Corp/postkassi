@@ -15,7 +15,7 @@ export type MessageFlagsTable = {
 
 export type MessageTable = {
 	messageId: string;
-	date: Date;
+	date: number;
 	folderId: number;
 	fromUserId: number;
 };

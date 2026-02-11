@@ -3,7 +3,7 @@ import type { Database } from "../database";
 
 export type UserTable = {
 	id: Generated<number>;
-	name?: string;
+	name: string | null;
 	address: string;
 };
 
@@ -11,13 +11,13 @@ const USER_UPSERT_CHUNK_SIZE = 400;
 
 export type UserUpsertEntry = {
 	address: string;
-	name: string | undefined;
+	name: string | null;
 };
 
 export async function upsertUser(
 	database: Kysely<Database>,
 	address: string,
-	name: string | undefined,
+	name: string | null,
 ): Promise<number> {
 	const result = await database
 		.insertInto("user")

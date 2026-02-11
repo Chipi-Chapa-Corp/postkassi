@@ -4,8 +4,8 @@ export type PersistedMessageSyncEntry = {
 	message: MailMessage;
 	persistedMessageId: string;
 	senderAddress: string;
-	senderName: string | undefined;
-	messageDate: Date;
+	senderName: string | null;
+	messageDate: number;
 };
 
 export function createPersistedMessageSyncEntries(
@@ -19,10 +19,13 @@ export function createPersistedMessageSyncEntries(
 			`${accountPath}:${folderPath}:${String(message.uid)}`;
 		const senderAddressEntry = message.envelope.from[0];
 		const senderAddress = senderAddressEntry?.address || "";
-		const senderName = senderAddressEntry?.name || undefined;
-		const messageDate = message.envelope.date
-			? new Date(message.envelope.date)
-			: new Date();
+		const senderName = senderAddressEntry?.name || null;
+		const parsedMessageDate = message.envelope.date
+			? Date.parse(message.envelope.date)
+			: Number.NaN;
+		const messageDate = Number.isNaN(parsedMessageDate)
+			? Date.now()
+			: parsedMessageDate;
 		return {
 			message,
 			persistedMessageId,

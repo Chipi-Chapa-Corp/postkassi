@@ -19,7 +19,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 	await db.schema
 		.createTable("message")
 		.addColumn("messageId", "text", (c) => c.primaryKey())
-		.addColumn("date", "datetime", (c) => c.notNull())
+		.addColumn("date", "integer", (c) => c.notNull())
 		.addColumn("folderId", "integer", (c) => c.notNull())
 		.addColumn("fromUserId", "integer", (c) => c.notNull())
 		.addForeignKeyConstraint(

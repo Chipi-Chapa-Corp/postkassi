@@ -7,10 +7,13 @@ export async function syncUsersForMessages(
 	database: Kysely<Database>,
 	messageEntries: PersistedMessageSyncEntry[],
 ): Promise<Map<string, number>> {
-	const nameByAddress = new Map<string, string | undefined>();
+	const nameByAddress = new Map<string, string | null>();
 	for (const messageEntry of messageEntries) {
 		if (messageEntry.senderAddress) {
-			nameByAddress.set(messageEntry.senderAddress, messageEntry.senderName);
+			nameByAddress.set(
+				messageEntry.senderAddress,
+				messageEntry.senderName ?? null,
+			);
 		} else {
 			nameByAddress.set("unknown@local", "Unknown");
 		}
@@ -20,7 +23,7 @@ export async function syncUsersForMessages(
 			}
 			nameByAddress.set(
 				recipientAddressEntry.address,
-				recipientAddressEntry.name || undefined,
+				recipientAddressEntry.name || null,
 			);
 		}
 		for (const recipientAddressEntry of messageEntry.message.envelope.cc) {
@@ -29,7 +32,7 @@ export async function syncUsersForMessages(
 			}
 			nameByAddress.set(
 				recipientAddressEntry.address,
-				recipientAddressEntry.name || undefined,
+				recipientAddressEntry.name || null,
 			);
 		}
 	}

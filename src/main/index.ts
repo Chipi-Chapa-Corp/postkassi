@@ -13,6 +13,7 @@ import { handleIpcs, makeIpcSender } from "./ipc";
 import { handleDebug } from "./ipc/debug";
 import { handleMailIpcs } from "./ipc/mail";
 import { handleWindowIpcs } from "./ipc/window";
+import { syncMail } from "./mail/sync";
 import { createWindow } from "./window";
 
 function setupMessaging(
@@ -59,6 +60,8 @@ app.whenReady().then(async () => {
 	});
 
 	loadWindow();
+
+	await syncMail(database, sessionBus, mailContext);
 });
 
 app.on("window-all-closed", () => {

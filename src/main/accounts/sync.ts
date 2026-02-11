@@ -10,7 +10,7 @@ export async function syncAccounts(
 ) {
 	const accounts = await getGoaAccounts(sessionBus);
 	for (const account of accounts) {
-		await upsertUser(database, account.email, account.name || undefined);
+		await upsertUser(database, account.email, account.name || null);
 	}
 	return accounts;
 }
