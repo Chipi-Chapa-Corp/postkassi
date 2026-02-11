@@ -28,6 +28,7 @@ type MailIpc = {
 		folderPath: string,
 		uid: number,
 	): MailMessageBody;
+	mailSync(): void;
 };
 
 export type IpcProtocol = GenericIpc & WindowIpc & MailIpc;

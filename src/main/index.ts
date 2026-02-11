@@ -1,6 +1,8 @@
 import { electronApp, optimizer } from "@electron-toolkit/utils";
 import type dbus from "dbus-next";
 import { app, BrowserWindow } from "electron";
+import type { Kysely } from "kysely";
+import { connectToDatabase, type Database } from "./database";
 import { createSessionBus } from "./goa/bus";
 import {
 	closeMailContext,
@@ -14,6 +16,7 @@ import { handleWindowIpcs } from "./ipc/window";
 import { createWindow } from "./window";
 
 function setupMessaging(
+	database: Kysely<Database>,
 	mainWindow: BrowserWindow,
 	sessionBus: dbus.MessageBus,
 	mailContext: MailContext,
@@ -27,7 +30,7 @@ function setupMessaging(
 		debug: handleDebug,
 	});
 	handleWindowIpcs();
-	handleMailIpcs(sessionBus, mailContext);
+	handleMailIpcs(database, sessionBus, mailContext);
 }
 
 app.whenReady().then(async () => {
@@ -39,10 +42,11 @@ app.whenReady().then(async () => {
 
 	const sessionBus = createSessionBus();
 	const mailContext = createMailContext(sessionBus);
+	const database = await connectToDatabase();
 
 	const { mainWindow, loadWindow } = await createWindow();
 
-	setupMessaging(mainWindow, sessionBus, mailContext);
+	setupMessaging(database, mainWindow, sessionBus, mailContext);
 
 	app.on("activate", () => {
 		if (BrowserWindow.getAllWindows().length === 0) loadWindow();
@@ -51,6 +55,7 @@ app.whenReady().then(async () => {
 	app.on("will-quit", () => {
 		closeMailContext(mailContext);
 		sessionBus.disconnect();
+		void database.destroy();
 	});
 
 	loadWindow();
