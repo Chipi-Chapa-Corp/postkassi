@@ -4,13 +4,8 @@ import type { Database } from "../../database";
 import type { InboxFolderSyncEntry } from "../../folder/sync";
 import { fetchMessages } from "../../imap";
 import type { MailContext } from "../../imap/context";
-import {
-	findExistingMessageBodyIds,
-	syncMessageBody,
-} from "./body";
-import {
-	createPersistedMessageSyncEntries,
-} from "./entries";
+import { findExistingMessageBodyIds, syncMessageBody } from "./body";
+import { createPersistedMessageSyncEntries } from "./entries";
 import { syncMessageFlags } from "./flags";
 import { upsertMessage } from "./message";
 import { syncMessageRecipients } from "./recipients";
