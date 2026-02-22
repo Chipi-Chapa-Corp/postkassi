@@ -5,3 +5,4 @@ out
 *.log*
 
 src/renderer/src/styled-system
+postkassi.db
